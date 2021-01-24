@@ -1,0 +1,6 @@
+---
+- name: Users and SSH keys only
+  hosts: all
+  become: true
+  roles:
+    - users

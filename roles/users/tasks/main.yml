@@ -1,0 +1,32 @@
+---
+- name: Ensure requested groups exist
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ project_users | map(attribute='groups') | flatten | unique | list }}"
+  when: project_users | length > 0
+
+- name: Manage local accounts
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups | default([]) | join(',') }}"
+    append: true
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    create_home: true
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ project_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Install authorized SSH keys for present users
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    state: present
+    exclusive: false
+  loop: "{{ project_users }}"
+  when:
+    - item.state | default('present') == 'present'
+    - item.ssh_key | default('') | length > 0
+  loop_control:
+    label: "{{ item.name }}"

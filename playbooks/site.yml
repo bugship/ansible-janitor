@@ -1,0 +1,11 @@
+---
+# Full host hygiene pass: packages, users/keys, sshd, firewall.
+- name: Host hygiene
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - common
+    - users
+    - sshd
+    - firewall

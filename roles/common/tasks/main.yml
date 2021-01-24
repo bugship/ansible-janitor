@@ -1,0 +1,26 @@
+---
+- name: Set system timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+  ignore_errors: true
+
+- name: Install baseline packages
+  ansible.builtin.package:
+    name: "{{ common_packages }}"
+    state: present
+  when: common_packages | length > 0
+
+- name: Ensure apt cache is fresh (Debian family)
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+  changed_when: false
+
+- name: Enable unattended security upgrades when package present
+  ansible.builtin.service:
+    name: unattended-upgrades
+    enabled: true
+    state: started
+  when: ansible_os_family == "Debian"
+  failed_when: false
