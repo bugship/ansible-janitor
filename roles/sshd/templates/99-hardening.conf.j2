@@ -1,0 +1,10 @@
+# Managed by ansible-janitor — do not edit by hand
+Port {{ sshd.port }}
+PermitRootLogin {{ sshd.permit_root_login }}
+PasswordAuthentication {{ sshd.password_authentication }}
+PubkeyAuthentication {{ sshd.pubkey_authentication }}
+MaxAuthTries {{ sshd.max_auth_tries }}
+ClientAliveInterval {{ sshd.client_alive_interval }}
+ClientAliveCountMax 2
+X11Forwarding no
+AllowAgentForwarding no

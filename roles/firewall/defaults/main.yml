@@ -1,0 +1,4 @@
+---
+firewall:
+  enabled: true
+  allow_tcp: [22]
